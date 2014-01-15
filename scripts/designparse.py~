@@ -1,0 +1,2 @@
+'''Given a design document written in LaTeX, annoted with section names
+and using the \field{} tag for code.'''

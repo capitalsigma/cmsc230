@@ -1,0 +1,195 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=prv_design_2 2014.1.10)  10 JAN 2014 23:28
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**&prv_design_2 _region_.tex
+(./_region_.tex
+LaTeX2e <2011/06/27>
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
+CUSTOMISED FORMAT. Preloaded files:
+        .
+ article.cls    2007/10/19 v1.4h Standard LaTeX document class
+  size10.clo    2007/10/19 v1.4h Standard LaTeX file (size option)
+listings.sty    2013/07/10 1.5 (Carsten Heinz)
+  keyval.sty    1999/03/16 v1.13 key=value parser (DPC)
+ lstmisc.sty    2013/07/10 1.5 (Carsten Heinz)
+listings.cfg    2013/06/27 1.5pre1 listings configuration
+lstlang1.sty    2013/06/27 1.5pre1 listings language file
+ lstmisc.sty    2013/07/10 1.5 (Carsten Heinz)
+        .
+No file _region_.aux.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+(/home/patrick/.emacs.d/elpa/auctex-11.87.2/latex/preview.sty
+Package: preview 2010-02-14 CVS-1.126 (AUCTeX/preview-latex)
+
+(/home/patrick/.emacs.d/elpa/auctex-11.87.2/latex/prtightpage.def
+\PreviewBorder=\dimen107
+)
+(/home/patrick/.emacs.d/elpa/auctex-11.87.2/latex/prauctex.def
+No auxiliary output files.
+
+
+\hbadness=\count95
+\hfuzz=\dimen108
+(/home/patrick/.emacs.d/elpa/auctex-11.87.2/latex/prauctex.cfg))
+(/home/patrick/.emacs.d/elpa/auctex-11.87.2/latex/prfootnotes.def)
+\pr@snippet=\count96
+\pr@box=\box28
+\pr@output=\toks16
+
+Preview: Fontsize 10pt
+)
+! Missing = inserted for \ifnum.
+<to be read again> 
+                   -
+l.10 \begin{document}
+                     
+I was expecting to see `<', `=', or `>'. Didn't.
+
+\c@lstlisting=\count97
+ !name(design_2.tex) !offset(41) 
+! Preview: Snippet 1 started.
+<-><->
+      
+l.13 \subsubsection
+                   {Methods}
+Not a real error.
+
+Preview: Tightpage -32891 -32891 32891 32891
+! Preview: Snippet 1 ended.(455111+0x22609920).
+<-><->
+      
+l.13 \subsubsection{Methods}
+                            
+Not a real error.
+
+[1
+
+]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 15.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 15.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.15 ...o>Array(<foo>Array *self, int max_length)}
+                                                  
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Extra }, or forgotten $.
+\field #1->\item \texttt { #1 }
+                               
+l.15 ...o>Array(<foo>Array *self, int max_length)}
+                                                  
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+! LaTeX Error: Command \item invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 ...ppend(<foo>Array *self, <foo> to\_append)}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 ...ppend(<foo>Array *self, <foo> to\_append)}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 ...ppend(<foo>Array *self, <foo> to\_append)}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: Command \textunderscore invalid in math mode on input line 16.
+
+
+LaTeX Warning: Command \textunderscore invalid in math mode on input line 16.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.17 
+     
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.17 
+     
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+ !name(design_2.tex) !offset(39) 
+
+! LaTeX Error: \begin{itemize} on input line 14 ended by \end{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.20 \end{document}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+ )
+(\end occurred inside a group at level 1)
+
+### semi simple group (level 1) entered at line 14 (\begingroup)
+### bottom level 
+Here is how much of TeX's memory you used:
+ 199 strings out of 491807
+ 2897 string characters out of 6118230
+ 104393 words of memory out of 5000000
+ 5182 multiletter control sequences out of 15000+600000
+ 5723 words of font info for 21 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 22i,5n,22p,186b,178s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+Output written on _region_.dvi (1 page, 1608 bytes).

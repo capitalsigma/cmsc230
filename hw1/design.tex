@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{listings}
+
+\lstset{language=C}
+
+\newcommand{\code}[1]{\begin{lstlisting}[language=C] #1 \end{lstlisting}}
+  
+\begin{document}
+\title{Homework 1 - Design Writeup}
+\author{Patrick Collins}
+\date{\today}
+\maketitle
+
+\section{Sequential} 
+
+\subsection{InputScanner}
+Properties:
+\begin{itemize}
+\item \texttt{public int verticies}
+\item \texttt{private int width}
+\item \texttt{private int height}
+\item \texttt{private int max\_dist}
+\item \texttt{private int inf\_dist}
+\end{itemize}
+Invariants: \texttt{height <= width == verticies}
+
+Methods:
+\begin{itemize}
+\item \texttt{public InputScanner* init(InputScanner *self)}\\
+Given a valid pointer to an InputScanner, initialize the object.
+
+\item \texttt{public Graph* read\_file(InputScanner *self, file *f)}\\
+Read a text file representing a graph in distance-matrix
+format. Return a new Graph object with ``unknown'' cells initialized
+to \texttt{inf\_dist} and all ``known'' \texttt{cells <= max\_dist}.
+
+Preconditions: \texttt{f} is a valid file handle.\\
+Postconditions: \texttt{self.vertices == self.width == self.height}
+
+\item \texttt{private int* read\_line(InputScanner *self, file *f)}\\
+Read a line of the input file and return a list of \texttt{int}s
+representing a row of the new array. If EOF has been reached, return
+\texttt{NULL}. If \texttt{self->verticies} has not yet been set, then set it to
+the length of the array to be returned. 
+
+Preconditions: \texttt{f} is a valid file handle.\\
+Postconditions: \texttt{(rv == NULL) || (length(rv) == self->verticies) ||
+  (self->vertices == 0)}
+
+\end{itemize}
+
+
+% Methods:
+% \begin{itemize}
+% \item \texttt{graph make\_graph(int n)}
+% Signature: \texttt(int \rightarrow graph)
+% Description: Given an integer \texttt{n}, return an 
+
+% \subsection{DistArray}
+% Methods:
+
+
+
+\end{document}

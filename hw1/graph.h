@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdbool.h>
 
 /* error codes */
@@ -5,14 +7,14 @@
 #define MALFORMED_INPUT_ERROR 2
 
 /* constants */
-#define INF_DIST 1000
-#define MAX_DIST 10000000
+#define INF_DIST 10000000
+#define MAX_DIST 1000
 
 /* globals */
 int error_code;
 
 /* datatypes */
-struct Graph;
+/* struct Graph; */
 typedef struct Graph Graph;
 
 
@@ -23,11 +25,11 @@ void _update_dist(Graph* self, int i, int j, int k);
 void _update_dists(Graph* self, int k);
 bool graph_eq(Graph* g1, Graph* g2);
 int get_verticies(Graph* self);
-void solve_graph(Graph* self);
+Graph* solve_graph(Graph* self);
 void print_graph(Graph* self);
 
 /* Constructors: */
-Graph* graph_from_file(file *f);
+Graph* graph_from_file(FILE *f);
 
 /* Destructors: */
 void free_graph(Graph* g);

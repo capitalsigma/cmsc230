@@ -1,24 +1,34 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "graph.h"
 #include "util.h"
 
-/* raises an error if expr is false */
-/* #define TRY(expr, to_raise) MACRO_WRAP(if( expr ) { \
 	
 
 /* globals */
 extern int error_code; 
 
 /* datatypes */
-struct {
+struct Graph {
 	int verticies;
 	int** matrix;
-} Graph;
+};
+
+/* debugging */
+#define PG(gr) printf("printing %s\n", #gr); print_graph(gr)
 
 /* private methods */
+int _clamp(int i){
+	if(i > MAX_DIST){
+		return INF_DIST;
+	} else {
+		return i;
+	}
+}
+
 
 /* we declare getters and setters so that tsgraph can deal with an opaque */
 /* struct */
@@ -27,14 +37,16 @@ int _get_element(Graph* self, int row, int column){
 }
 
 void _set_element(Graph* self, int row, int column, int val){
+	assert((MAX_DIST >= val) || (val == INF_DIST));
 	self->matrix[row][column] = val;
 }
 
-void _update_dist(Graph* self, int i, int j, int k){
-	int old_val = self->matrix[i][j];
-	int new_val = self->matrix[i][k] + self->matrix[k][j];
 
-	self->matrix[i][j] = old_val > new_val ? new_val : old_val;
+void _update_dist(Graph* self, int i, int j, int k){
+	int old_val = _clamp(self->matrix[i][j]);
+	int new_val = _clamp(self->matrix[i][k] + self->matrix[k][j]);
+
+	_set_element(self, i, j,  old_val > new_val ? new_val : old_val);
 }
 void _update_dists(Graph* self, int k){
 	for(int i = 0; i < self->verticies; i++){
@@ -45,14 +57,16 @@ void _update_dists(Graph* self, int k){
 }
 
 /* public methods */
-void solve_graph(Graph* self){
+Graph* solve_graph(Graph* self){
 	for(int k = 0; k < self->verticies; k++){
 		_update_dists(self, k);
+		PG(self);
 	}
+	return self; 				/* for convenience */
 }
 
 void print_graph(Graph* self){
-	printf("Printing a %i-vertex graph\n", self->vertex);
+	printf("Printing a %i-vertex graph\n", self->verticies);
 
 	for(int i = 0; i < self->verticies; i++){
 		for(int j = 0; j < self->verticies; j++){
@@ -66,12 +80,14 @@ void print_graph(Graph* self){
 			
 
 bool graph_eq(Graph* g1, Graph* g2){
-	if(g1->verticies != g2->verticies){
+	if(!(g1 && g2) || g1->verticies != g2->verticies){
 		return false;
 	}
 	for(int i = 0; i < g1->verticies; i++){
 		for(int j = 0; j < g1->verticies; j++){
-			if(g1->matrix[i][j] != g2->matrix[i][j]);
+			if(g1->matrix[i][j] != g2->matrix[i][j]){
+				return false;
+			}
 		}
 	}
 
@@ -79,11 +95,14 @@ bool graph_eq(Graph* g1, Graph* g2){
 }
 
 int get_verticies(Graph* self){
+	LOGGER();
+	printf("%i\n", self->verticies);
 	return self->verticies;
 }
 
 /* Constructors: */
-Graph* graph_from_file(file *f){
+Graph* graph_from_file(FILE *f){
+	assert(f);
 	Graph* ret;
 	int** matrix;
 	int next_el;
@@ -91,7 +110,7 @@ Graph* graph_from_file(file *f){
 	ret = malloc(sizeof(Graph));
 
 	/* TODO: error handling */
-	fscanf(f, "%i", &ret->verticies);
+	HANDLE(fscanf(f, "%i", &ret->verticies));
 
 	if(ret->verticies){
 		HANDLE(matrix = malloc(ret->verticies * sizeof(int*)));
@@ -104,8 +123,8 @@ Graph* graph_from_file(file *f){
 
 	for(int i = 0; i < ret->verticies; i++){
 		for(int j = 0; j < ret->verticies; j++){
-			if(fscanf(f, &next_el)){
-				matrix[i][j] = next_el > MAX_DIST ? MAX_DIST : next_el;
+			if(fscanf(f, "%i",  &next_el)){
+				matrix[i][j] = next_el;
 			} else {
 				printf("Bad file.\n");
 				exit(MALFORMED_INPUT_ERROR);
@@ -114,6 +133,7 @@ Graph* graph_from_file(file *f){
 	}
 
 	ret->matrix = matrix;
+	fclose(f);
 	return ret;
 }
 
@@ -123,4 +143,4 @@ void free_graph(Graph* self){
 		free(self->matrix[i]);
 	}
 	free(self->matrix);
-}
+ }

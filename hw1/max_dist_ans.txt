@@ -19,7 +19,7 @@
 #define HORIZONTAL_GRAPH_ANS "input/horizontal_ans.txt"
 /* #define VERTICAL_GRAPH_ANS "input/vertical_ans.txt" */
 #define CIRCULAR_GRAPH_ANS "input/circular_ans.txt"
-#define MAX_DIST_GRAPH_ANS "input/max_dist_ans.txt"
+#define MAX_DIST_GRAPH_ANS "input/max_dist.txt"
 
 
 /* #define TEST(gr) _check_ ## gr ( solve_graph( gr )) */
@@ -122,8 +122,6 @@ int main(int argc, char* argv[]){
 	test_graph();
 
 	BIG_SEP();
-
-	test_tsgraph();
 
 	DONE();
 }

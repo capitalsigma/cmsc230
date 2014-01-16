@@ -26,3 +26,9 @@
 /hw1/graph_flymake_master.s
 /hw1/inputscanner.s
 /hw1/tests.s
+/hw1/graph_flymake.s
+/hw1/inputscanner_flymake.s
+/hw1/tests_flymake.s
+/hw1/tests_flymake_master.s
+/hw1/tsgraph_flymake.s
+/hw1/tsgraph_flymake_master.s

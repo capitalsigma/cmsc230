@@ -1,4 +1,4 @@
-CFLAGS=-ggdb -pthread -Wall -O3 -std=c11
+CFLAGS=-ggdb -pthread -Wall -O3 -std=c11 -DDEBUG 
 CC=gcc 
 CHK_SOURCES = *.c
 DEPS = graph.c

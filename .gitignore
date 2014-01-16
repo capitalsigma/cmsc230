@@ -21,3 +21,8 @@
 # Emacs files
 *~
 *\#
+
+/hw1/graph.s
+/hw1/graph_flymake_master.s
+/hw1/inputscanner.s
+/hw1/tests.s

@@ -92,7 +92,6 @@ bool graph_eq(Graph* g1, Graph* g2){
 
 int get_verticies(Graph* self){
 	LOGGER();
-	printf("%i\n", self->verticies);
 	return self->verticies;
 }
 
@@ -106,10 +105,10 @@ Graph* graph_from_file(FILE *f){
 	ret = malloc(sizeof(Graph));
 
 	/* TODO: error handling */
-	HANDLE(fscanf(f, "%i", &ret->verticies));
+	HANDLE(!fscanf(f, "%i", &ret->verticies));
 
 	if(ret->verticies){
-		HANDLE(matrix = malloc(ret->verticies * sizeof(int*)));
+		HANDLE(!(matrix = malloc(ret->verticies * sizeof(int*))));
 		for(int i = 0; i < ret->verticies; i++){
 			HANDLE(!(matrix[i] = malloc(ret->verticies * sizeof(int))));
 		}

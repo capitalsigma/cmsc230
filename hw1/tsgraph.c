@@ -56,7 +56,7 @@ void _update_dists_p(TSGraph* self, int i_start, int i_end){
 				_update_dist(get_graph(self), i, j, k);
 			}
 		}
-		HANDLE(!pthread_barrier_wait(self->barrier));
+		pthread_barrier_wait(self->barrier);
 	}
 }
 

@@ -21,3 +21,6 @@
 # Emacs files
 *~
 *\#
+
+# Results
+results/

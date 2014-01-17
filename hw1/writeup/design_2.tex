@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{listings}
+
+\lstset{language=C}
+
+\newcommand{\code}[1]{\begin{lstlisting}[language=C]
+    #1 \end{lstlisting}}
+\newcommand{\field}[1]{\item \texttt{ #1 }}
+  
+\begin{document}
+\title{Homework 1 - Design Writeup}
+\author{Patrick Collins}
+\date{\today}
+\maketitle
+
+\section{Shared} 
+
+\subsection{<foo>Array}
+\subsubsection{Description}
+First, I will implement a very simplistic templating system to allow
+for the creation of generic objects. The syntax will be as follows:
+
+I will make two files, \texttt{Array.c} and \texttt{Array.h}
+which contain all of the necessary code for the implementation
+described below. Wherever it is necessary to write a type constraint,
+I will simply write \texttt{<foo>}. 
+
+Then, I will use a zsh shell script, \texttt{instantiate}, with the
+following syntax:\\
+\texttt{instantiate Object typename}\\
+where \texttt{Object} is a name of a \texttt{.c} and \texttt{.h}
+file in the same directory, and \texttt{typename} is a valid C
+type. This script will contain the following:
+\begin{lstlisting}[language=bash]
+for ext in .c .h
+do
+    sed ``s/<foo>/$2/g" $1$ext > $2$1$ext
+done
+\end{lstlisting}
+
+e.g. it will replace all instnaces of the string \texttt{<foo>} with
+the specified typename, allowing for extremely simple generics.
+
+\subsubsection{Properties}
+\begin{itemize}
+\item \texttt{private int max_length}
+\field{private int current_pos}
+\item \texttt{private <foo> elements[]}
+\end{itemize}
+
+Information hiding will be achieved here by use of an opaque
+\texttt{struct}.
+
+\subsubsection{Methods}
+\begin{itemize}
+\field{<foo>Array* new\_<foo>Array(<foo>Array *self, int max_length)}
+
+Initialize and allocatem memory for a new \texttt{<foo>Array}. If \texttt{self} is not
+\texttt{NULL}, then set \texttt{self} it to point to the new
+\texttt{<foo>Array}. Return a pointer to the new array.
+
+
+\field{<foo>Array* <foo>Array\_push(<foo>Array *self, <foo> to_push)}
+
+Add \texttt{to_push} to the ``end'' of \texttt{self}, i.e. the
+position denotated by \texttt{self->current_pos} and increment
+\texttt{self->current_pos}. If this would result in falling off teh
+end of the array, fail. 
+
+\field{<foo>Array* <foo>Array\_get(<foo>Array *self, int index)}
+
+Set 
+
+
+
+\end{document}

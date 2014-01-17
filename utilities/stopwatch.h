@@ -1,12 +1,13 @@
 #ifndef STOPWATCH_H_
 #define STOPWATCH_H_
 
-#include <time.h>
+/* #include <time.h> */
+#include <sys/time.h>
 
 typedef struct {
 	struct timeval startTime;
 	struct timeval stopTime;
-}StopWatch_t;
+} StopWatch_t;
 
 void startTimer(StopWatch_t *);
 

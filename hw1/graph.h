@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdio.h>
 
 /* error codes */
 #define INVALID_INPUT_ERROR 1

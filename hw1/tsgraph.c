@@ -1,3 +1,6 @@
+#define _XOPEN_SOURCE 600
+
+#include <assert.h>
 #include <stdlib.h>
 #include <pthread.h>
 
@@ -36,7 +39,7 @@ void _free_dist_args(_DistArgs* args){
 struct TSGraph {
 	Graph* graph;
 	int num_threads;
-	pthread_barrier_t barrier;
+	pthread_barrier_t *barrier;
 };
 
 /* Methods: */
@@ -60,6 +63,7 @@ void _update_dists_p(TSGraph* self, int i_start, int i_end){
 void* _update_dist_p_wrapper(void* arguments){
 	_DistArgs* args = (_DistArgs*)arguments;
 	_update_dists_p(args->tsgraph, args->i_start, args->i_end);
+	_free_dist_args(args);
 	pthread_exit(NULL);
 }
 
@@ -73,13 +77,13 @@ TSGraph* solve_tsgraph(TSGraph* self){
 
 	for(int i = 0; i < self->num_threads; i++){
 		_DistArgs* args = _make_dist_args(self, i * chunk,  (i + 1) * chunk);
-		HANDLE(!pthread_create(&threads[i], NULL, _update_dist_p_wrapper, 
+		HANDLE(pthread_create(&threads[i], NULL, _update_dist_p_wrapper, 
 		                       args));
-		_free_dist_args(args);
+		/* _free_dist_args(args); */
 	}
 	
 	for(int i = 0; i < self->num_threads; i++){
-		HANDLE(!pthread_join(threads[i], NULL));
+		HANDLE(pthread_join(threads[i], NULL));
 	}
 
 	return self;
@@ -87,25 +91,31 @@ TSGraph* solve_tsgraph(TSGraph* self){
 
 /* Constructor: */
 TSGraph* tsgraph_from_graph(Graph* graph, int num_threads){
+	assert(num_threads);
 	int vert = get_verticies(graph);
 	TSGraph* ret = malloc(sizeof(TSGraph));
 
+	if(!(ret->num_threads = num_threads > vert ? vert : num_threads)){
+		ret->num_threads = 1;
+	}
+
 	ret->graph = graph;
-	ret->num_threads = num_threads > vert ? vert : num_threads;
-	HANDLE(!pthread_barrier_init(ret->barrier, NULL, ret->num_threads));
+	HANDLE(!(ret->barrier = malloc(sizeof(pthread_barrier_t))));
+	HANDLE(pthread_barrier_init(ret->barrier, NULL, ret->num_threads));
 
 	return ret;
 }
 
 /* Destructor: */
 void free_tsgraph(TSGraph* self){
-	HANDLE(!pthread_barrier_destroy(self->barrier));
+	HANDLE(pthread_barrier_destroy(self->barrier));
+	free(self->barrier);
 	free(self);
-	
 }
 
 void deep_free_tsgraph(TSGraph* self){
-	free_graph(self->graph);
-	free(self);
+	Graph* graph = self->graph;
+	free_tsgraph(self);
+	free_graph(graph);
 }
 

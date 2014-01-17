@@ -17,9 +17,6 @@ struct Graph {
 	int** matrix;
 };
 
-/* debugging */
-#define PG(gr) printf("printing %s\n", #gr); print_graph(gr)
-
 /* private methods */
 int _clamp(int i){
 	if(i > MAX_DIST){
@@ -60,7 +57,6 @@ void _update_dists(Graph* self, int k){
 Graph* solve_graph(Graph* self){
 	for(int k = 0; k < self->verticies; k++){
 		_update_dists(self, k);
-		PG(self);
 	}
 	return self; 				/* for convenience */
 }
@@ -115,7 +111,7 @@ Graph* graph_from_file(FILE *f){
 	if(ret->verticies){
 		HANDLE(matrix = malloc(ret->verticies * sizeof(int*)));
 		for(int i = 0; i < ret->verticies; i++){
-			HANDLE(matrix[i] = malloc(ret->verticies * sizeof(int)));
+			HANDLE(!(matrix[i] = malloc(ret->verticies * sizeof(int))));
 		}
 	} else {
 		matrix = NULL;
@@ -143,4 +139,5 @@ void free_graph(Graph* self){
 		free(self->matrix[i]);
 	}
 	free(self->matrix);
+	free(self);
  }

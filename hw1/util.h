@@ -1,3 +1,6 @@
+#pragma once
+#include <stdio.h>
+
 #define MACRO_WRAP(exp) do { exp; } while(0)
 
 #ifdef DEBUG

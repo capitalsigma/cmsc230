@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+
 #include "util.h"
 #include "graph.h"
 #include "tsgraph.h"
@@ -11,13 +12,11 @@
 
 #define EMPTY_GRAPH "input/empty.txt" /* written */
 #define HORIZONTAL_GRAPH "input/horizontal.txt" /* written */
-/* #define VERTICAL_GRAPH "input/vertical.txt"  */
 #define CIRCULAR_GRAPH "input/circular.txt" /* written */
 #define MAX_DIST_GRAPH "input/max_dist.txt" /* written */
 
 #define EMPTY_GRAPH_ANS "input/empty.txt"
 #define HORIZONTAL_GRAPH_ANS "input/horizontal_ans.txt"
-/* #define VERTICAL_GRAPH_ANS "input/vertical_ans.txt" */
 #define CIRCULAR_GRAPH_ANS "input/circular_ans.txt"
 #define MAX_DIST_GRAPH_ANS "input/max_dist_ans.txt"
 
@@ -30,9 +29,11 @@
 bool _check_ans(Graph* g1, char* path){
 	FILE* f = fopen(path, "r");
 	Graph* g2 = graph_from_file(f);
+	bool ret = graph_eq(g1, g2);
 
-	return graph_eq(g1, g2);
+	free_graph(g2);
 
+	return ret;	
 	/* fclose(f); */
 }
 
@@ -64,7 +65,6 @@ void _check_max_dist(Graph* g1){
 void test_graph(){
 	Graph *empty, *horiz, *circ, *max_dist;
 	/* FILE *empty_f, *horiz_f, *vert_f; */
-	HANDLE(fopen(HORIZONTAL_GRAPH, "r"));
 	empty = graph_from_file(fopen(EMPTY_GRAPH, "r"));
 	PS("empty");
 	horiz = graph_from_file(fopen(HORIZONTAL_GRAPH, "r"));
@@ -107,11 +107,46 @@ void test_graph(){
 	_check_circ(solve_graph(circ));
 	_check_max_dist(solve_graph(max_dist));
 
-	/* SMALL_SEP(); */
+	SMALL_SEP();
+
+	free_graph(empty);
+	free_graph(horiz);
+	free_graph(circ);
+	free_graph(max_dist);
 }
 
 
 void test_tsgraph(){
+	Graph *empty, *horiz, *circ, *max_dist;
+	TSGraph *ts_empty, *ts_horiz, *ts_circ, *ts_max_dist;
+	
+	empty = graph_from_file(fopen(EMPTY_GRAPH, "r"));
+	horiz = graph_from_file(fopen(HORIZONTAL_GRAPH, "r"));
+	circ = graph_from_file(fopen(CIRCULAR_GRAPH, "r"));
+	max_dist = graph_from_file(fopen(MAX_DIST_GRAPH, "r"));
+
+	for(int i = 1; i < 10; i++){
+		ts_empty = tsgraph_from_graph(empty, i);
+		ts_horiz = tsgraph_from_graph(horiz, i);
+		ts_circ = tsgraph_from_graph(circ, i);
+		ts_max_dist = tsgraph_from_graph(max_dist, i);
+
+		_check_empty(get_graph(solve_tsgraph(ts_empty)));
+		_check_horiz(get_graph(solve_tsgraph(ts_horiz)));
+		_check_circ(get_graph(solve_tsgraph(ts_circ)));
+		_check_max_dist(get_graph(solve_tsgraph(ts_max_dist)));
+
+		free_tsgraph(ts_empty);
+		free_tsgraph(ts_horiz);
+		free_tsgraph(ts_circ);
+		free_tsgraph(ts_max_dist);
+	}
+
+	free_graph(empty);
+	free_graph(horiz);
+	free_graph(circ);
+	free_graph(max_dist);
+
 
 }
 

@@ -1,6 +1,36 @@
 \documentclass{article}
 \usepackage{amsmath}
 
+\newcommand{\contradiction}{{\hbox{%
+    \setbox0=\hbox{$\mkern-3mu\times\mkern-3mu$}%
+    \setbox1=\hbox to0pt{\hss$\times$\hss}%
+    \copy0\raisebox{0.5\wd0}{\copy1}\raisebox{-0.5\wd0}{\box1}\box0
+}}}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  tabsize=3,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+}
+
 
 \newcommand{\field}[1]{\item \texttt{#1}}
 \newcommand{\num}[1]{\setcounter{enumi}{#1}}
@@ -12,8 +42,8 @@
 \maketitle
 
 \begin{enumerate}
-\setcounter{enumi}{2}
-
+\setcounter{enumi}{1}
+% 2, 3, 4, 5, 7, 8, 11, 14, 15, 16
 % safety -- bad thing never happens
 % liveness -- good things eventually happen
 \item Identify safety and liveness properties. 
@@ -38,31 +68,178 @@ Alice and Bob each have a can on their windowsill. Alice does the following:
 \begin{enumerate}
 \item She waits until her can is down.
 \item She releases the pets.
-\item When the pets returns, Alice checks whether they finished the
+\item When the pets return, Alice checks whether they finished the
   food. If they did, she resets her can and knocks over Bob's.\\
 \end{enumerate}
 Bob does the following:
 \begin{enumerate}
 \item He waits until his can is down.
 \item He puts food in the yard.
+\item He resets his can.
 \item He pulls the string and knocks Alice's can down.
 \end{enumerate}
 
-\item
+\item Design a winning strategy, when...
+\begin{itemize}
+\item You know the initial state of the switch is off.\\
+Designate one prisoner as a counter, who thinks of a number $x = 0$. Whenever a prisoner except for
+the counter enters the cell for his second time, he turns the light
+on. If a prisoner other than the counter enters the cell and the light
+is on, he leaves it on, and if he was supposed to turn it on that
+time, he remembers to turn it on the next time. When the counter
+enters the cell and the light is on, he turns it off and increments
+the number $x$ that he is thinking of. When the counter is thinking of
+$P$, he announces that every prisoner has visited the room at least once.
+\item You do not know the initial state of the switch.\\
+The same as in the original case, except the counter waits until $x =
+P + 1$. 
+
+\end{itemize}
+
+
 \item Design a strategy that allows $P - 1$ of $P$ prisoners to be
   freed.\\
 The first prisoner determines the parity of blue hats in front of
-him. If it is even, he says ``Blue'', otherwise he says ``Red.'' Every
+him. If it is even, he says ``Red'', otherwise he says ``Blue.'' Every other
 prisoner then determines the parity of blue hats in front of
-him. Every prisoner then begins to think ``Even'' or ``Odd.'' Each
-prisoner guesses accordingly: if his hat must be blue for the parity
-that he is thinking of to be correct, he answers ``Blue,'' otherwise
-he answers ``Red.'' Whenever a prisoner hears another answers blue, he
-starts to think ``Odd'' if he was thinking ``Even'' before, and
-``Even'' otherwise. This strategy allows every prisoner except for the
-first to guess the color of his own hat.
-% do we need to prove this?
+him. If the parity is even, he starts to think of the same color that
+the first prisoner said, if it is odd, he thinks of the opposite
+color. Whenever a prisoner hears an earlier prisoner say ``Blue,'' he
+switches the color that he is thinking of to the opposite
+color. Whenever it is a prisoner's turn to answer, he says the color
+that he is thinking of. Then, every prisoner except for the first one
+will always correctly guess the color of his hat.
 
-\num{8}
+\num{6}
+\item Solve for $S_n$.
+\begin{align*}
+S_2 &= \frac 1 {1 - p + \frac p 2}\\
+p &= 2 - \frac 2 S_2 \\
+S_n &= \frac 1 {1 - (2 -  \frac 2 S_2) + \frac {2 - \frac 2 S_2} n}
+ = \frac 1 {\frac 2 S_2 + \frac{2 - \frac 2 S_2} n - 1}
+\end{align*}
 
-\item 
+\item When is the multiprocessor superior?\\
+Plugging in the number of processors to Amdahl's law, the multiprocessor is superior when:
+\begin{equation*}
+\frac{1}{(1 - p) + \frac p {10}} = \frac 1 {10 - 9p} > 5
+\end{equation*}\\
+so the multiprocessor solution is superior for applications that are
+at least $88.\overline{8}\%$ parallel. 
+
+\num{10}
+\item Does/Is the \texttt{Flaky} lock\dots 
+\begin{enumerate}
+\item satisfy mutual exclusion?\\
+Yes. For any two threads A and B, note that:
+\begin{align*}
+W_A(turn=A) \rightarrow R_A(busy==false) \rightarrow W_A(busy = true) \rightarrow R_A(turn == A) \rightarrow CS_A \\
+W_B(turn=B) \rightarrow R_B(busy==false) \rightarrow W_B(busy = true) \rightarrow R_B(turn == B) \rightarrow CS_B
+\end{align*}
+
+Suppose, for contradiction, that there exist some executions $i, j$
+such that $CS^i_A \not \rightarrow CS^j_B$ and $CS^i_B \not\rightarrow CS^j_A$. Suppose,
+without loss of generality, that A is about to enter its critical
+section. Then it must be the case that $R_A(turn == A)$ has just
+occurred. If any other thread B is about to enter its critical section,
+then it must be the case that:
+
+\begin{align*}
+W_A(turn=A) \rightarrow R_A(turn == A) \rightarrow R_B(turn == B)
+\end{align*}
+
+\contradiction
+\item deadlock free?\\
+No. With any number of threads, the following sequence of events can
+occur:
+\begin{itemize}
+\item The lock is initialized, and \texttt{busy = false}.
+\item Each thread executes line 5-9, i.e. each thread leaves the inner
+  loop before \texttt{busy = true}.
+\item Each thread except for the thread whose ID is currently stored
+  in \texttt{turn} returns to the top of the loop and blocks at line 9.
+\item The remaining thread returns to the top of the loop and blocks
+  at line 9.
+\end{itemize}
+
+The algorithm will now no longer advance.
+\item starvation free?\\
+No, because deadlock implies starvation.
+
+\end{enumerate}
+
+\num{13}
+\item Modify \texttt{Filter} to be an $\ell$-exclusion algorithm.
+\begin{lstlisting}[language=Java]
+class Filter implements Lock {
+	int[] level;
+	int[] victim;
+	public Filter(int n, int L) {
+		level = new int[n];
+		victim = new int[n - L];
+		for (int i = 0; i < n; i++) {
+			level[i] = 0;
+		}
+	}
+	public void lock() {
+		int me = ThreadID.get();
+		for (int i = 1; i < n - L; i++) { 
+			int num_conflicts;
+			level[me] = i;
+			victim[i] = me;
+
+			while (victim[i] == me) {
+				num_conflicts = 0;
+				for (int k = 0; k < n; k++){
+					if((k != me) && (level[k] >= i)){
+						if(++num_conflicts >= L) return;
+					}
+				}
+			}
+		}
+	}
+	public void unlock() {
+		int me = ThreadID.get();
+		level[me] = 0;
+	}
+}
+\end{lstlisting}
+
+\item \texttt{FastPath} neither provides mutual exclusion nor is
+  starvation free. 
+\begin{itemize}
+\item \texttt{FastPath} does not provide mutual exclusion because if
+  two threads read line 8 at the same time, both will enter their
+  critical sections: one by going through \texttt{lock.lock} and the
+  other by exiting \texttt{FastPath}'s \texttt{lock} method.
+\item \texttt{FastPath} is not starvation free, because it could be
+  the case that every time one thread gets a chance to execute an
+  instruction, it is stuck on line 8, and other threads have set
+  \texttt{y} to a value other than -1. 
+\end{itemize}
+
+\item Prove that\dots
+\begin{itemize}
+\item At most one thread gets the value \texttt{STOP}.\\
+Suppose some thread A just executed line 14 and it is about to return
+\texttt{STOP}. Then it must be the case that \texttt{last == i} and
+\texttt{goRight == true}. All threads which have not yet executed line
+11 will return \texttt{RIGHT}. All other threads which have executed
+line 11 return \texttt{DOWN}, since \texttt{last == i} and no thread
+can change the value of \texttt{i} if it has already executed line 11.
+\item At most $n -1$ threads return \texttt{DOWN}.\\
+If some thread has already returned \texttt{STOP}, then no more than
+$n-1$ threads will return \texttt{DOWN}, since each thread returns
+only once. If no thread has yet returned \texttt{STOP}, then every
+thread must have already executed lines 11-13. One of these threads
+will be the thread such that \texttt{last == i}, and this thread will
+return \texttt{STOP}. Therefore no more than $n-1$ threads will return
+\texttt{DOWN}.
+\item At most $n -1$ threads return \texttt{RIGHT}. \\
+If any thread returns \texttt{RIGHT}, then it must be that
+\texttt{goRight == true}, and so at least one thread must have
+executed line 13, and at least one thread cannot return
+\texttt{RIGHT}. Therefore at most $n-1$ threads return \texttt{RIGHT}.
+\end{itemize}
+\end{enumerate}
+\end{document}

@@ -1,6 +1,9 @@
 \documentclass{article}
 \usepackage{amsmath}
-\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
 
 
 \newcommand{\field}[1]{\item \texttt{ #1 }}
@@ -25,7 +28,7 @@ As a result, the \texttt{TSGraph} module became significantly
 simpler. The code in the \texttt{hw1/code} directory shows the
 changes. Each thread was spawned to execute \texttt{update\_dists\_p},
 which divided work across threads along the middle loop index,
-\texttt{i}, and a call to \texttt{pthread\_barrier\_wait} was added at
+\texttt{i}, a call to \texttt{pthread\_barrier\_wait} was added at
 the end of each iteration of \texttt{k}, and the \texttt{TSGraph}
 object was expanded to have-a \texttt{pthread\_barrier\_t} object. 
 
@@ -36,19 +39,22 @@ synchronization obviated the need for unit testing of synchronization,
 since they are part of the standard library. 
 
 \section{Hypotheses}
-Parallel overhead: It is expected that serial code will run faster
+Parallel overhead: \\
+It is expected that serial code will run faster
 than parallel code for $T = 1$, with the difference between serial and
 parallel closing as the size of the input matrix rises. This is
 consistent with a small, constant slowdown for spawning a thread, and
-identical performance when executing the algorithm.
+identical performance when executing the algorithm.\bigskip
 
+\noindent
 Parallel speedup: \\
 For input matrix sizes less than 1024 x 1024, it is expected that
-there will be two local maxima for performance around  $N = 8$ and $N
+there will be two local maxima for performance around  $T = 8$ and $T
 = 16$, which represent the maximum number of cores on either one or
 both CPUs available on the machine, respectively. The global maximum
-is expected to be at $N = 16$. \\ \bigskip
+is expected to be at $T = 16$. \smallskip
 
+\noindent
 Noting that, at 1024 x 1024, the matrix will no longer be able to fit
 inside of a single one of the two shared 2 MB L2 caches, it is
 expected that while performance will be better than serial, the
@@ -57,10 +63,17 @@ matrices.
 
 \section{Results}
 \subsection{Data}
-All times are given in microseconds, with the standard deviation given
-in parentheses. The parallel table lists the number of threads above
+All times are given in milliseconds, with the standard deviation of
+each measurement given
+in parentheses beside it. The parallel table lists the number of threads above
 each column. Each combination of size and number of threads was tested
-for 102 runs.
+for 102 runs. The graphs used for input are available in the
+\texttt{hw1/input} directory, and the Python script used to generate
+the graphs is available under \texttt{hw1/scripts} directory. For
+inputs where $T > N$, the number of threads spawned was limited to the
+number of nodes, so measurements in these cases are not meaningful.
+
+
 
 Serial:
 \begin{center}
@@ -92,10 +105,6 @@ Parallel:
 \end{center}
 
 
-Parallel overhead:
-
-
-
 \begin{center}
 \begin{tabular}{rllll}
  Size  &  8                   &  16                   &  32                   &  64                   \\
@@ -108,6 +117,55 @@ Parallel overhead:
  1024  &  753.5782 (46.1587)  &  575.8449 (215.8510)  &  1557.1865 (15.9205)  &  1904.4370 (34.3756)  \\
 \end{tabular}
 \end{center}
+
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{70mm}
+    \includegraphics[width=70mm]{./parallel-overhead.png}
+    \caption{Parallel Overhead}
+  \end{subfigure}
+  \begin{subfigure}{60mm}
+    \includegraphics[width=70mm]{./parallel-speedup.png}
+    \caption{Parallel Speedup}
+  \end{subfigure}
+\end{figure}
+
+
+\pagebreak
+\subsection{Analysis}
+The hypothesis regarding parallel overhead was disproved. For smaller
+graphs, the serial version was as much as 10x faster than the parallel
+version running with one thread. Two separate sources of inefficiency
+can be identified: first, for smaller graph sizes, the overhead is
+likely due to spawning a new thread. For larger graph sizes, it seems
+improbable that this would continue to be a significant
+factor. Therefore, it is more likely that this slowdown was caused by
+the use of
+\texttt{pthread\_barrier\_wait} inside of the outer loop of
+\texttt{\_update\_dists\_p}. \texttt{pthread\_barrier\_wait} must
+include some sort of atomic decrement operation that allows each
+thread to update the state of the barrier when it reaches it. This
+operation is evidently very expensive, as the parallel code ran at at
+most half the speed of the serial code for $T = 1$. 
+
+
+The first hypothesis regarding parallel speedup was partially confirmed and
+partially disproved. The measurements do exhibit maxima at $T = 8$ and
+$T = 16$. These maxima, however, are not present within measurements
+of a single graph size. Rather, they are present across different
+graph sizes: for $N < 1024$, the greatest speedup tends to occur
+around 6 or 8 threads, with the maximum occurring closer to 1 for
+smaller graph sizes. For $N = 1024$, however, the maximum occurs at $N
+= 16$, where a speedup of approximately 4x relative to serial is
+achieved. 
+
+The second hypothesis regarding parallel speedup was disproved. It
+appears that the benefits of parallelism outweigh any negative effects
+on cache locality for $N \leq 1024$.
+
+
 
 
 \end{document}

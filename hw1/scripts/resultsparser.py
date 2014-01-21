@@ -2,6 +2,7 @@ import glob
 import re
 import os
 import numpy
+from matplotlib import pyplot
 from sys import argv
 
 
@@ -16,7 +17,6 @@ class ResultParser:
         self._regex = re.compile(PATTERN)
         self._files = glob.glob(os.path.join(base_dir, "*.{}".format(ext)))
         print(os.path.join(base_dir, ext))
-        print(self._files)
 
         self.res = {}
 
@@ -25,7 +25,6 @@ class ResultParser:
                            self._files):
             try:
                 groups = self._regex.search(name).groupdict()
-                print(groups)
             except AttributeError:
                 print("no match for ", name)
                 continue
@@ -34,16 +33,12 @@ class ResultParser:
             to_add = [float(x.strip()) for x in handle]
 
             if groups['series'] not in self.res:
-                print('yes1')
                 self.res[groups['series']] = {}
             if groups['size'] not in self.res[groups['series']]:
-                print('yes2')
                 self.res[groups['series']][groups['size']] = {}
             if groups['threads']:
-                print('yes3')
                 self.res[groups['series']][groups['size']][groups['threads']] = to_add
             else: 
-                print('yes4')
                 self.res[groups['series']][groups['size']] = to_add
 
         return self.res
@@ -73,17 +68,71 @@ class ResultParser:
         self._print_par_section(4, True)
         self._print_par_section(4, False)
         
+    def _par_overhead(self, size, thds):
+        mean_par = numpy.mean(self.res['par'][size][thds])
+        mean_ser = numpy.mean(self.res['serial'][size])
+        return mean_ser / mean_par 
 
-    def make_graphs(self):
-        pass
+
+    def _get_dataseries(self, overhead): 
+        return list(zip(*sorted(overhead.items(), key=lambda x:int(x[0]))))       
+
+    def parallel_overhead(self):
+        overhead = {}
+        print([size for size in self.res['par']])
+        for size in self.res['par'].keys():
+            overhead[size] = self._par_overhead(size, '1')
+
+
+        print(list(zip(*sorted(overhead.items(), key=lambda x:int(x[0])))))
+        x, y = self._get_dataseries(overhead)
+        pyplot.plot(x, y, 'bo-')
+        pyplot.xlabel("Input Graph Size")
+        pyplot.ylabel("Ratio of Serial to Parallel Execution Time")
+        pyplot.legend(fancybox=True)
+        pyplot.grid(True)
+        pyplot.axis([0, 1045, 0, .6,])
+        pyplot.show()
+
+
+        print(overhead)
+
+    def parallel_speedup(self):
+        speedup = {}
+        pyplot.hold(True)
+        # thds = speedup['par']['16'].keys()
+        # for thd in thds:
+        #     speedup[thds] = {}
+        #     for size in self.res['par']:
+        #         speedup[thds][size] = self._par_overhead(size, thds)
+        for size in self.res['par']:
+            speedup[size] = {}
+            for thds in self.res['par'][size]:
+                speedup[size][thds] = self._par_overhead(size, thds)
+
+        for size, color in sorted(zip(speedup, 'bgrcmyk'), key=lambda x:int(x[0])):
+            x, y = self._get_dataseries(speedup[size])
+            print(x)
+            print(y)
+            pyplot.plot(x, y, '{}o-'.format(color), label="{} nodes".format(size))
+
+
+        pyplot.xlabel("Number of threads")
+        pyplot.ylabel("Ratio of Serial to Parallel Execution Time")
+        pyplot.legend(fancybox=True)
+        pyplot.grid(True)
+        pyplot.axis([0, 65, 0, 4.15,])
+        pyplot.show()
+        
 
 
 def main(path):
     parser = ResultParser(path)
-    print(parser.parse())
-    parser.print_table()
+    parser.parse()
+    print(parser.res)
+    # parser.print_table()
+    parser.parallel_overhead()
+    # parser.parallel_speedup()
 
 if __name__ == '__main__':
-    try:
-        main(argv[1])
-    
+    main(argv[1])
